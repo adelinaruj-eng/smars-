@@ -264,7 +264,7 @@ Deno.serve(async (req: Request) => {
       },
     };
 
-    const models = ["gemini-2.0-flash", "gemini-1.5-flash"];
+    const models = ["gemini-2.5-flash-preview-05-20", "gemini-2.0-flash-001", "gemini-2.5-flash-preview-04-17"];
 
     let stream: ReadableStream<Uint8Array> | null = null;
     let lastError = "";
