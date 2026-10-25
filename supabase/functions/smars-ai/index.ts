@@ -256,7 +256,7 @@ Deno.serve(async (req: Request) => {
     contents.push({ role: "user", parts: [{ text: message }] });
 
     const requestBody = {
-      system_instruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+      systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
       contents,
       generationConfig: {
         temperature: 0.7,
@@ -264,7 +264,7 @@ Deno.serve(async (req: Request) => {
       },
     };
 
-    const models = ["gemini-2.5-flash-preview-05-20", "gemini-2.0-flash-001", "gemini-2.5-flash-preview-04-17"];
+    const models = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
 
     let stream: ReadableStream<Uint8Array> | null = null;
     let lastError = "";
@@ -334,6 +334,36 @@ Deno.serve(async (req: Request) => {
           "X-Content-Type-Options": "nosniff",
         },
       });
+    }
+
+    // Streaming failed for all models — try a non-streaming request as a last resort
+    for (const model of models) {
+      try {
+        const geminiResponse = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody),
+          }
+        );
+
+        if (geminiResponse.ok) {
+          const data = await geminiResponse.json();
+          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            return new Response(
+              JSON.stringify({ response: text }),
+              { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            );
+          }
+        } else {
+          lastError = await geminiResponse.text().catch(() => "");
+          console.error(`Gemini non-stream error (${model}):`, lastError);
+        }
+      } catch (nsErr) {
+        console.error(`Gemini non-stream fetch error (${model}):`, nsErr);
+      }
     }
 
     return new Response(
