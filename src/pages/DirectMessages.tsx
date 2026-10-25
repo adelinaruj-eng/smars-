@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { Send, Search, ArrowLeft, MessageCircle, Lock, Loader2 } from 'lucide-react';
+import { Send, Search, ArrowLeft, MessageCircle, Lock, Loader2, Circle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { Avatar } from '@/components/Avatar';
@@ -7,6 +7,7 @@ import { ChatBackground } from '@/components/ChatBackground';
 import { EmojiInput } from '@/components/EmojiPicker';
 import { encryptMessage, decryptMessage } from '@/lib/crypto';
 import { formatLastSeen } from '@/lib/formatTime';
+import { isStickerMessage } from '@/lib/stickers';
 import type { Profile, DirectMessage } from '@/lib/types';
 
 interface DecryptedMessage extends DirectMessage {
@@ -236,26 +237,40 @@ export function DirectMessages() {
               {search ? 'No members found' : 'No other members yet'}
             </div>
           ) : (
-            filteredMembers.map((m) => (
-              <button
-                key={m.id}
-                onClick={() => selectMember(m)}
-                className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors ${
-                  selectedMember?.id === m.id ? 'bg-primary-50' : ''
-                }`}
-              >
-                <Avatar profile={m} size="md" showStatus isOnline={isOnline(m.id)} />
-                <div className="flex-1 text-left min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{m.display_name}</p>
-                  <p className="text-xs truncate">
-                    <span className={isOnline(m.id) ? 'text-green-500' : 'text-gray-400'}>
-                      {isOnline(m.id) ? 'Online' : formatLastSeen(getLastSeen(m.id))}
-                    </span>
-                    {isOnline(m.id) && <span className="text-gray-400"> · {m.full_name}</span>}
-                  </p>
-                </div>
-              </button>
-            ))
+            filteredMembers.map((m) => {
+              const online = isOnline(m.id);
+              const seen = getLastSeen(m.id);
+              const isStale = !online && !seen;
+              return (
+                <button
+                  key={m.id}
+                  onClick={() => selectMember(m)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors ${
+                    selectedMember?.id === m.id ? 'bg-primary-50' : ''
+                  }`}
+                >
+                  <Avatar profile={m} size="md" showStatus isOnline={online} />
+                  <div className="flex-1 text-left min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{m.display_name}</p>
+                    <p className="text-xs truncate flex items-center gap-1">
+                      {online ? (
+                        <>
+                          <span className="inline-flex items-center gap-1 text-green-600 font-medium">
+                            <Circle className="w-1.5 h-1.5 fill-green-500 text-green-500" />
+                            Active now
+                          </span>
+                          <span className="text-gray-400">· {m.full_name}</span>
+                        </>
+                      ) : (
+                        <span className={isStale ? 'text-gray-300 italic' : 'text-gray-400'}>
+                          {isStale ? 'Inactive' : formatLastSeen(seen)}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </button>
+              );
+            })
           )}
         </div>
       </div>
@@ -281,8 +296,12 @@ export function DirectMessages() {
               <Avatar profile={selectedMember} size="md" showStatus isOnline={isOnline(selectedMember.id)} />
               <div className="flex-1">
                 <p className="text-sm font-semibold text-gray-900">{selectedMember.display_name}</p>
-                <p className={`text-xs ${isOnline(selectedMember.id) ? 'text-green-500' : 'text-gray-400'}`}>
-                  {isOnline(selectedMember.id) ? 'Online' : formatLastSeen(getLastSeen(selectedMember.id))}
+                <p className={`text-xs flex items-center gap-1 ${isOnline(selectedMember.id) ? 'text-green-600 font-medium' : 'text-gray-400'}`}>
+                  {isOnline(selectedMember.id) ? (
+                    <><Circle className="w-1.5 h-1.5 fill-green-500 text-green-500" />Active now</>
+                  ) : (
+                    formatLastSeen(getLastSeen(selectedMember.id))
+                  )}
                 </p>
               </div>
               {canEncryptCurrent ? (
@@ -308,16 +327,30 @@ export function DirectMessages() {
               ) : (
                 messages.map((msg) => {
                   const isOwn = msg.sender_id === user!.id;
+                  const isStickerOnly = isStickerMessage(msg.decryptedContent);
+                  if (isStickerOnly) {
+                    return (
+                      <div key={msg.id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+                        <div className="flex flex-col gap-1 max-w-[70%]">
+                          <div className="text-6xl leading-none p-1">{msg.decryptedContent.trim()}</div>
+                          <p className={`text-[10px] flex items-center gap-1 ${isOwn ? 'text-primary-100 self-end' : 'text-gray-500 self-start'}`}>
+                            {msg.encrypted && <Lock className="w-2.5 h-2.5" />}
+                            {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  }
                   return (
                     <div
                       key={msg.id}
                       className={`flex ${isOwn ? 'justify-end' : 'justify-start'} animate-fade-in`}
                     >
                       <div
-                        className={`max-w-[70%] px-4 py-2.5 rounded-2xl text-sm ${
+                        className={`max-w-[70%] px-4 py-2.5 rounded-2xl text-sm shadow-sm ${
                           isOwn
                             ? 'bg-primary-600 text-white rounded-br-md'
-                            : 'bg-white text-gray-800 rounded-bl-md shadow-sm border border-gray-100'
+                            : 'bg-white text-gray-800 rounded-bl-md border border-gray-100'
                         }`}
                       >
                         <p className="leading-relaxed">{msg.decryptedContent}</p>
@@ -350,6 +383,7 @@ export function DirectMessages() {
                 onChange={setNewMessage}
                 placeholder="Type a message..."
                 onSend={doSend}
+                onSticker={(s) => { setNewMessage(s); doSend(); }}
               />
               <button
                 type="submit"

@@ -168,50 +168,6 @@ MAJOR CLASS ACHIEVEMENTS:
    - BIOLOGY: GPA 2.5250 — Grade B (Very Good)
    - BASIC MATHEMATICS: GPA 2.0250 — Grade B (Very Good)
 
-   INDIVIDUAL RESULTS (CSEE 2025 — sorted by candidate number, all Division 1):
-   S0148/0001 — AGG 12 — DIV I
-   S0148/0002 — AGG 12 — DIV I
-   S0148/0003 — AGG 14 — DIV I
-   S0148/0004 — AGG 9 — DIV I
-   S0148/0005 — AGG 15 — DIV I
-   S0148/0006 — AGG 10 — DIV I
-   S0148/0007 — AGG 9 — DIV I
-   S0148/0008 — AGG 12 — DIV I
-   S0148/0009 — AGG 10 — DIV I
-   S0148/0010 — AGG 12 — DIV I
-   S0148/0011 — AGG 10 — DIV I
-   S0148/0012 — AGG 8 — DIV I
-   S0148/0013 — AGG 7 — DIV I (best in the class)
-   S0148/0014 — AGG 10 — DIV I
-   S0148/0015 — AGG 14 — DIV I
-   S0148/0016 — AGG 11 — DIV I
-   S0148/0017 — AGG 8 — DIV I
-   S0148/0018 — AGG 8 — DIV I
-   S0148/0019 — AGG 11 — DIV I
-   S0148/0020 — AGG 7 — DIV I (tied best)
-   S0148/0021 — AGG 7 — DIV I (tied best)
-   S0148/0022 — AGG 12 — DIV I
-   S0148/0023 — AGG 9 — DIV I
-   S0148/0024 — AGG 7 — DIV I (tied best)
-   S0148/0025 — AGG 12 — DIV I
-   S0148/0026 — AGG 9 — DIV I
-   S0148/0027 — AGG 8 — DIV I
-   S0148/0028 — AGG 8 — DIV I
-   S0148/0029 — AGG 10 — DIV I
-   S0148/0030 — AGG 7 — DIV I (tied best)
-   S0148/0031 — AGG 10 — DIV I
-   S0148/0032 — AGG 7 — DIV I (tied best)
-   S0148/0033 — AGG 11 — DIV I
-   S0148/0034 — AGG 10 — DIV I
-   S0148/0035 — AGG 9 — DIV I
-   S0148/0036 — AGG 10 — DIV I
-   S0148/0037 — AGG 7 — DIV I (tied best)
-   S0148/0038 — AGG 12 — DIV I
-   S0148/0039 — AGG 7 — DIV I (tied best)
-   S0148/0040 — AGG 9 — DIV I
-
-   The best aggregate score was 7 (achieved by candidates 0013, 0020, 0021, 0024, 0030, 0032, 0037, 0039).
-
 2. ST. MARTIN'S CHOIR: The class had a choir that outperformed all other school choirs, known as St. Martin's Choir.
 
 3. ACADEMIC EXCELLENCE DESPITE CHARACTER: Despite the class being full of noise makers and stubborn people, the class always performed exceptionally well in examinations.
@@ -219,30 +175,7 @@ MAJOR CLASS ACHIEVEMENTS:
 4. MUSICAL TALENT: The class had musicians who held up the school for most of the time in playing the piano, teaching music, and composing good songs for school parties and events.
 `;
 
-Deno.serve(async (req: Request) => {
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
-  };
-
-  if (req.method === "OPTIONS") {
-    return new Response(null, { status: 200, headers: corsHeaders });
-  }
-
-  try {
-    const { message, history } = await req.json();
-
-    if (!message || typeof message !== "string") {
-      return new Response(
-        JSON.stringify({ error: "Message is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const geminiKey = Deno.env.get("GEMINI_API_KEY");
-
-    const systemInstruction = `You are Smars AI, a knowledgeable and versatile assistant created for the Rubya Seminary Class of 2025 community. You are powered by Google Gemini.
+const SYSTEM_INSTRUCTION = `You are Smars AI, a knowledgeable and versatile assistant created for the Rubya Seminary Class of 2025 community. You are powered by Google Gemini.
 
 You are a FULL AI assistant — you can answer ANY question the user asks, including but not limited to:
 - General knowledge, science, history, geography, current events
@@ -265,38 +198,46 @@ Guidelines:
 - If you don't know something, say so rather than making things up.
 - Keep responses reasonably concise but don't sacrifice clarity.`;
 
-    // Fallback responses when no Gemini API key is available
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
+};
+
+function fallbackResponse(message: string): string {
+  const lowerMsg = message.toLowerCase();
+  if (lowerMsg.includes("class") || lowerMsg.includes("rubya") || lowerMsg.includes("rutabo") || lowerMsg.includes("expelled") || lowerMsg.includes("graduated") || lowerMsg.includes("seminary")) {
+    return "The Class of 2025 started with 61 students at Rutabo Seminary in 2020 (Primary 6). They moved to Rubya Seminary in 2022 for Form One. Over the years, students were expelled at various points. In 2025, 28 students graduated from Rubya Seminary. By 2026, some returned for priestly formation while others went to different schools. Ask me about any specific year for more details!";
+  }
+  return "I'm having trouble connecting to my AI service right now. Please try again in a moment — I should be back up shortly!";
+}
+
+Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 200, headers: corsHeaders });
+  }
+
+  try {
+    const { message, history } = await req.json();
+
+    if (!message || typeof message !== "string") {
+      return new Response(
+        JSON.stringify({ error: "Message is required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const geminiKey = Deno.env.get("GEMINI_API_KEY");
+
+    // No API key — return a simple fallback (not streamed, since it's instant)
     if (!geminiKey) {
       const lowerMsg = message.toLowerCase();
       let response: string;
-
-      // Class-specific knowledge fallbacks
       if (lowerMsg.includes("hello") || lowerMsg.includes("hi") || lowerMsg.includes("hey")) {
         response = "Hello! I'm Smars AI, your class assistant. I can answer questions about anything — from general knowledge to the full history of the Class of 2025. What would you like to know?";
-      } else if (lowerMsg.includes("history") && (lowerMsg.includes("class") || lowerMsg.includes("2025") || lowerMsg.includes("rubya") || lowerMsg.includes("rutabo"))) {
-        response = "The Class of 2025 started with 61 students at Rutabo Seminary in 2020 (Primary 6). After expulsions and transfers, they moved to Rubya Seminary in 2022 for Form One. Over the years, students were expelled at various points. In 2025, 28 students graduated from Rubya Seminary. By 2026, some returned for priestly formation while others went to different schools. Ask me about any specific year or detail!";
-      } else if (lowerMsg.includes("2020") || lowerMsg.includes("primary 6") || (lowerMsg.includes("rutabo") && !lowerMsg.includes("what is"))) {
-        response = "In 2020, the class started at Rutabo Seminary in Primary 6 with 61 students. That same year, 10 students were expelled, leaving 51. They continued at Rutabo for Primary 7 in 2021, where 1 more was expelled, leaving 50 students.";
-      } else if (lowerMsg.includes("2022") || lowerMsg.includes("form one") || lowerMsg.includes("form 1")) {
-        response = "In 2022, all 50 remaining students joined Rubya Seminary for Form One. All 50 successfully completed the year.";
-      } else if (lowerMsg.includes("2023") || lowerMsg.includes("form two") || lowerMsg.includes("form 2")) {
-        response = "In 2023, the class moved to Form Two. One new student joined (bringing the total to 51), but seven classmates were expelled in an abrupt case, leaving 44 students.";
-      } else if (lowerMsg.includes("2024") || lowerMsg.includes("form three") || lowerMsg.includes("form 3")) {
-        response = "In 2024, the 44 remaining students continued to Form Three. During this year, 4 more students were expelled, leaving the class with 40 students.";
-      } else if (lowerMsg.includes("2025") || lowerMsg.includes("form four") || lowerMsg.includes("form 4") || lowerMsg.includes("graduat")) {
-        response = "In 2025, the class entered Form Four with 40 students. Twelve more classmates were expelled, leaving 28 students who graduated from Rubya Seminary as the Class of 2025.";
-      } else if (lowerMsg.includes("2026") || (lowerMsg.includes("after") && lowerMsg.includes("graduat")) || (lowerMsg.includes("post") && lowerMsg.includes("graduat"))) {
-        response = "After graduation in 2025, by 2026 some students returned to Rubya Seminary to continue with priestly formation. Others departed for other schools to pursue different paths in life.";
-      } else if ((lowerMsg.includes("how many") || lowerMsg.includes("number")) && (lowerMsg.includes("student") || lowerMsg.includes("expelled") || lowerMsg.includes("graduated") || lowerMsg.includes("class"))) {
-        response = "The class started with 61 students in 2020. Over the years: 10 expelled in 2020, 1 in 2021, 7 in 2023, 4 in 2024, and 12 in 2025. One student joined in 2023. In total, 28 students graduated from Rubya Seminary in 2025.";
-      } else if (lowerMsg.includes("rubya") && !lowerMsg.includes("what is")) {
-        response = "Rubya Seminary is where the Class of 2025 completed their secondary education (Form One through Form Four, 2022-2025). 28 students graduated from Rubya Seminary in 2025. Some returned in 2026 for priestly formation.";
-      } else if (lowerMsg.includes("help") || lowerMsg.includes("what can you do") || lowerMsg.includes("what do you know")) {
-        response = "I'm Smars AI, a full AI assistant! I can help with:\n• **General knowledge** — science, history, geography, current events\n• **Math & problem solving** — explanations, step-by-step solutions\n• **Creative tasks** — writing, brainstorming, ideas\n• **Technology** — programming, how-to guides\n• **Class of 2025 history** — any year, event, or milestone from our class journey\n• And much more!\n\nWhat would you like to know?";
       } else {
-        response = "I'm Smars AI, and I'm currently running in a limited mode. I can still answer questions about the Class of 2025 history — try asking about a specific year, how many students were in the class, or what happened during a certain period. For general questions, please try again in a moment while I reconnect to my full AI capabilities!";
+        response = fallbackResponse(message);
       }
-
       return new Response(
         JSON.stringify({ response }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -304,9 +245,8 @@ Guidelines:
     }
 
     const contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
-
     if (Array.isArray(history)) {
-      for (const h of history.slice(-10)) {
+      for (const h of history.slice(-8)) {
         contents.push({
           role: h.role === "assistant" ? "model" : "user",
           parts: [{ text: h.content }],
@@ -315,17 +255,8 @@ Guidelines:
     }
     contents.push({ role: "user", parts: [{ text: message }] });
 
-    // Try multiple model names — some may not be available depending on the API key tier
-    const models = [
-      "gemini-2.0-flash",
-      "gemini-2.0-flash-001",
-      "gemini-1.5-flash",
-      "gemini-1.5-flash-latest",
-      "gemini-flash-latest",
-    ];
-
     const requestBody = {
-      system_instruction: { parts: [{ text: systemInstruction }] },
+      system_instruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
       contents,
       generationConfig: {
         temperature: 0.7,
@@ -333,14 +264,15 @@ Guidelines:
       },
     };
 
-    let geminiData: any = null;
+    const models = ["gemini-2.0-flash", "gemini-1.5-flash"];
+
+    let stream: ReadableStream<Uint8Array> | null = null;
     let lastError = "";
-    let success = false;
 
     for (const model of models) {
       try {
         const geminiResponse = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${geminiKey}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -348,18 +280,43 @@ Guidelines:
           }
         );
 
-        if (geminiResponse.ok) {
-          geminiData = await geminiResponse.json();
-          const reply = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (reply) {
-            success = true;
-            return new Response(
-              JSON.stringify({ response: reply }),
-              { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-            );
-          }
+        if (geminiResponse.ok && geminiResponse.body) {
+          const upstream = geminiResponse.body;
+          stream = new ReadableStream({
+            async start(controller) {
+              const reader = upstream.getReader();
+              const decoder = new TextDecoder();
+              let buffer = "";
+              try {
+                while (true) {
+                  const { done, value } = await reader.read();
+                  if (done) break;
+                  buffer += decoder.decode(value, { stream: true });
+                  const lines = buffer.split("\n");
+                  buffer = lines.pop() || "";
+                  for (const line of lines) {
+                    if (!line.startsWith("data:")) continue;
+                    const jsonStr = line.slice(5).trim();
+                    if (!jsonStr) continue;
+                    try {
+                      const parsed = JSON.parse(jsonStr);
+                      const chunk = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
+                      if (chunk) controller.enqueue(new TextEncoder().encode(chunk));
+                    } catch {
+                      // partial JSON, ignore
+                    }
+                  }
+                }
+              } catch (err) {
+                controller.error(err);
+                return;
+              }
+              controller.close();
+            },
+          });
+          break;
         } else {
-          lastError = await geminiResponse.text();
+          lastError = await geminiResponse.text().catch(() => "");
           console.error(`Gemini API error (${model}):`, lastError);
         }
       } catch (modelErr) {
@@ -368,17 +325,19 @@ Guidelines:
       }
     }
 
-    // All models failed — return fallback with the error included for debugging
-    console.error("All Gemini models failed. Last error:", lastError);
-    const lowerMsg = message.toLowerCase();
-    let fallback: string;
-    if (lowerMsg.includes("class") || lowerMsg.includes("rubya") || lowerMsg.includes("rutabo") || lowerMsg.includes("expelled") || lowerMsg.includes("graduated") || lowerMsg.includes("seminary")) {
-      fallback = "The Class of 2025 started with 61 students at Rutabo Seminary in 2020 (Primary 6). They moved to Rubya Seminary in 2022 for Form One. Over the years, students were expelled at various points. In 2025, 28 students graduated from Rubya Seminary. By 2026, some returned for priestly formation while others went to different schools. Ask me about any specific year for more details!";
-    } else {
-      fallback = "I'm having trouble connecting to my AI service right now. Please try again in a moment — I should be back up shortly!";
+    if (stream) {
+      return new Response(stream, {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "no-cache",
+          "X-Content-Type-Options": "nosniff",
+        },
+      });
     }
+
     return new Response(
-      JSON.stringify({ response: fallback, debug_error: lastError.slice(0, 500) }),
+      JSON.stringify({ response: fallbackResponse(message), debug_error: lastError.slice(0, 500) }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {

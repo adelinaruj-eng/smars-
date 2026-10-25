@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Smile } from 'lucide-react';
+import { Smile, Sticker } from 'lucide-react';
 
 const EMOJI_CATEGORIES: { name: string; emojis: string[] }[] = [
   {
     name: 'Smileys',
-    emojis: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🥸', '🤩', '🥳', '😏', '😒', '🙂‍↔️', '🙂‍↕️', '😨', '😬', '😮‍💨', '🥺', '😢', '😭', '😱', '😖', '😣', '😞', '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬', '😈', '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾', '🤖'],
+    emojis: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🥸', '🤩', '🥳', '😏', '😒', '😨', '😬', '🥺', '😢', '😭', '😱', '😖', '😣', '😞', '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬', '😈', '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾', '🤖'],
   },
   {
     name: 'Gestures',
@@ -16,11 +16,11 @@ const EMOJI_CATEGORIES: { name: string; emojis: string[] }[] = [
   },
   {
     name: 'Nature',
-    emojis: ['🌸', '🌺', '🌻', '🌹', '🥀', '🌷', '💐', '🌼', '🪷', ' pot_plant', '🌵', '🌴', '🌳', '🌲', '🌴', '🍀', '🌿', '🍃', '🌱', '🪴', '🌾', '🌷', '🌹', '🌺', '🌸', '🌼', '🌈', '☀️', '🌤️', '⛅', '🌥️', '☁️', '🌦️', '🌧️', '⛈️', '🌩️', '🌨️', '❄️', '☃️', '⛄', '🌬️', '💨', '🌪️', '🌫️', '🌊', '💧', '🔥', '⭐', '🌟', '✨', '⚡', '☄️', '💥', '🌌', '🌙', '🌍', '🌎', '🌏', '🪐', '💫'],
+    emojis: ['🌸', '🌺', '🌻', '🌹', '🥀', '🌷', '💐', '🌼', '🪷', '🌵', '🌴', '🌳', '🌲', '🍀', '🌿', '🍃', '🌱', '🪴', '🌾', '🌈', '☀️', '🌤️', '⛅', '🌥️', '☁️', '🌦️', '🌧️', '⛈️', '🌩️', '🌨️', '❄️', '☃️', '⛄', '🌬️', '💨', '🌪️', '🌫️', '🌊', '💧', '🔥', '⭐', '🌟', '✨', '⚡', '☄️', '💥', '🌌', '🌙', '🌍', '🌎', '🌏', '🪐', '💫'],
   },
   {
     name: 'Food',
-    emojis: ['🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌶️', '🫑', '🌽', '🥕', '🫒', '🧄', '🧅', '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🧈', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🌭', '🍔', '🍟', '🍕', '🥪', '🥙', '🌮', '🌯', '🥗', '🥘', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟', '🍤', '🍙', '🍚', '🍘', '🍥', '🥠', '🍦', '🍧', '🍨', '🍩', '🍪', '🎂', '🍰', '🧁', '🍫', '🍬', '🍭', '🍮', '🍯', '☕', '🍵', '🧃', '🥤', '🧋', '🍺', '🍻', '🥃', '🍷', '🥂', 'Cheers'],
+    emojis: ['🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌶️', '🫑', '🌽', '🥕', '🫒', '🧄', '🧅', '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🧈', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🌭', '🍔', '🍟', '🍕', '🥪', '🥙', '🌮', '🌯', '🥗', '🥘', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟', '🍤', '🍙', '🍚', '🍘', '🍥', '🥠', '🍦', '🍧', '🍨', '🍩', '🍪', '🎂', '🍰', '🧁', '🍫', '🍬', '🍭', '🍮', '🍯', '☕', '🍵', '🧃', '🥤', '🧋', '🍺', '🍻', '🥃', '🍷', '🥂'],
   },
   {
     name: 'Activities',
@@ -28,7 +28,34 @@ const EMOJI_CATEGORIES: { name: string; emojis: string[] }[] = [
   },
   {
     name: 'Symbols',
-    emojis: ['✅', '❌', '❎', '✔️', '☑️', '🔵', '🟠', '🟡', '🟢', '🟣', '⚫', '⚪', '🟤', '🔺', '🔻', '🔸', '🔹', '🔶', '🔷', '🔳', '🔲', '▪️', '▫️', '◾', '◽', '◼️', '◻️', '🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '⬛', '⬜', '🟫', '🔔', '🔕', '🚫', '✔️', '❓', '❗', '‼️', '⁉️', '💬', '💭', '🗯️', '⏰', '🔔', '📢', '📣', '🔔', '🔕', '♻️', '⚠️', '⚡', '🚨', '🔞', '📶', '🆗', '🆕', '🆒', '🆓', '🔊', '🔇', '📢', '🔉', '🔈'],
+    emojis: ['✅', '❌', '❎', '✔️', '☑️', '🔵', '🟠', '🟡', '🟢', '🟣', '⚫', '⚪', '🟤', '🔺', '🔻', '🔸', '🔹', '🔶', '🔷', '🔳', '🔲', '▪️', '▫️', '◾', '◽', '◼️', '◻️', '🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '⬛', '⬜', '🟫', '🔔', '🔕', '🚫', '❓', '❗', '‼️', '⁉️', '💬', '💭', '🗯️', '♻️', '⚠️', '⚡', '🚨', '🔞', '📶', '🆗', '🆕', '🆒', '🆓', '🔊', '🔇', '📢', '🔉', '🔈'],
+  },
+];
+
+const STICKER_PACKS: { name: string; stickers: string[] }[] = [
+  {
+    name: 'Expressions',
+    stickers: ['😀', '😂', '🥰', '😎', '🤔', '😴', '🤯', '😱', '🥳', '😭', '😡', '🤗', '🤩', '🥺', '😏', '🤓', '😈', '👻', '🤡', '💩', '👍', '👎', '🙏', '💪', '👏', '🤝', '✌️', '🤞', '👋', '🫶', '💯', '🔥', '✨', '🎉', '🎊', '💔', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '💕', '💖', '💘', '💝'],
+  },
+  {
+    name: 'Animals',
+    stickers: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦗', '🕷️', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🦬', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🦮', '🐩', '🦕', '🦖'],
+  },
+  {
+    name: 'Food & Drink',
+    stickers: ['🍎', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🥑', '🥦', '🌽', '🥕', '🍔', '🍟', '🍕', '🌭', '🥪', '🌮', '🌯', '🥙', '🥗', '🥘', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🍤', '🍙', '🍚', '🍦', '🍧', '🍨', '🍩', '🍪', '🎂', '🍰', '🧁', '🍫', '🍬', '🍭', '🍮', '☕', '🍵', '🧃', '🥤', '🧋', '🍺', '🍷', '🥂', '🍾'],
+  },
+  {
+    name: 'Nature & Travel',
+    stickers: ['🌸', '🌺', '🌻', '🌹', '🥀', '🌷', '💐', '🌼', '🪷', '🌵', '🌴', '🌳', '🌲', '🍀', '🌿', '🍃', '🌱', '🪴', '🌾', '🌈', '☀️', '⛅', '☁️', '🌧️', '⛈️', '❄️', '☃️', '⛄', '🌊', '💧', '🔥', '⭐', '🌟', '✨', '🌌', '🌙', '🌍', '🌎', '🌏', '🪐', '🏔️', '⛰️', '🌋', '🗻', '🏕️', '🏖️', '🏜️', '🌳', '🌴', '🌈', '🌅', '🌄', '🌇', '🌆', '🏙️', '🌃', '🌉', '🌁'],
+  },
+  {
+    name: 'Activities',
+    stickers: ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🥅', '⛳', '🏹', '🎣', '🥊', '🥋', '🎽', '🛹', '🎿', '⛷️', '🏂', '🪂', '🏆', '🥇', '🥈', '🥉', '🏅', '🎖️', '🎫', '🎟️', '🎪', '🎭', '🎨', '🎬', '🎤', '🎧', '🎼', '🎵', '🎶', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩', '🎉', '🎊', '🎈', '🎁', '🎀'],
+  },
+  {
+    name: 'Objects',
+    stickers: ['📱', '💻', '⌨️', '🖥️', '🖨️', '🖱️', '💾', '💿', '📀', '📷', '📸', '📹', '🎥', '🎬', '📺', '📻', '⏰', '🕰️', '⌛', '⏳', '🔋', '🔌', '💡', '🔦', '🕯️', '💸', '💵', '💴', '💶', '💷', '🪙', '💰', '💳', '💎', '🔧', '🔨', '🛠️', '⚙️', '🧲', '🔑', '🗝️', '🚪', '🛏️', '🛋️', '🚿', '🛁', '🪒', '🧴', '🧷', '🧹', '🧺', '🧻', '🚽', '🚰', ' shower', '🛁', '🪞', '🪟', '🛍️', '🛒', '🎁', '🎈', '🎀', '🪄', '🧨', '✨', '🎉', '🎊'],
   },
 ];
 
@@ -86,15 +113,73 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
   );
 }
 
+interface StickerPickerProps {
+  onStickerSelect: (sticker: string) => void;
+  onClose: () => void;
+}
+
+export function StickerPicker({ onStickerSelect, onClose }: StickerPickerProps) {
+  const [activePack, setActivePack] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        onClose();
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+  return (
+    <div
+      ref={ref}
+      className="absolute bottom-full right-0 mb-2 bg-white rounded-2xl shadow-2xl border border-gray-200 w-80 z-50 animate-slide-up"
+    >
+      <div className="flex border-b border-gray-100 overflow-x-auto scrollbar-thin">
+        {STICKER_PACKS.map((pack, i) => (
+          <button
+            key={pack.name}
+            onClick={() => setActivePack(i)}
+            className={`px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors ${
+              activePack === i ? 'text-primary-600 border-b-2 border-primary-600' : 'text-gray-400'
+            }`}
+          >
+            {pack.name}
+          </button>
+        ))}
+      </div>
+      <div className="p-3 max-h-56 overflow-y-auto scrollbar-thin">
+        <div className="grid grid-cols-4 gap-2">
+          {STICKER_PACKS[activePack].stickers.map((sticker, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                onStickerSelect(sticker);
+                onClose();
+              }}
+              className="aspect-square flex items-center justify-center text-4xl rounded-xl hover:bg-gray-100 transition-all hover:scale-110 active:scale-95"
+            >
+              {sticker}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface EmojiInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   onSend?: () => void;
+  onSticker?: (sticker: string) => void;
 }
 
-export function EmojiInput({ value, onChange, placeholder, onSend }: EmojiInputProps) {
-  const [showPicker, setShowPicker] = useState(false);
+export function EmojiInput({ value, onChange, placeholder, onSend, onSticker }: EmojiInputProps) {
+  const [showPicker, setShowPicker] = useState<'emoji' | 'sticker' | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleEmoji(emoji: string) {
@@ -111,7 +196,7 @@ export function EmojiInput({ value, onChange, placeholder, onSend }: EmojiInputP
   }
 
   return (
-    <div className="flex items-center gap-2 flex-1 relative">
+    <div className="flex items-center gap-1 flex-1 relative">
       <input
         ref={inputRef}
         type="text"
@@ -126,15 +211,32 @@ export function EmojiInput({ value, onChange, placeholder, onSend }: EmojiInputP
       <div className="relative">
         <button
           type="button"
-          onClick={() => setShowPicker(!showPicker)}
-          className="w-9 h-9 text-gray-400 hover:text-primary-600 transition-colors flex items-center justify-center"
+          onClick={() => setShowPicker(showPicker === 'sticker' ? null : 'sticker')}
+          className={`w-9 h-9 transition-colors flex items-center justify-center rounded-lg ${showPicker === 'sticker' ? 'text-primary-600 bg-primary-50' : 'text-gray-400 hover:text-primary-600'}`}
+          title="Stickers"
+        >
+          <Sticker className="w-5 h-5" />
+        </button>
+        {showPicker === 'sticker' && onSticker && (
+          <StickerPicker
+            onStickerSelect={(s) => { onSticker(s); setShowPicker(null); }}
+            onClose={() => setShowPicker(null)}
+          />
+        )}
+      </div>
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setShowPicker(showPicker === 'emoji' ? null : 'emoji')}
+          className={`w-9 h-9 transition-colors flex items-center justify-center rounded-lg ${showPicker === 'emoji' ? 'text-primary-600 bg-primary-50' : 'text-gray-400 hover:text-primary-600'}`}
+          title="Emojis"
         >
           <Smile className="w-5 h-5" />
         </button>
-        {showPicker && (
+        {showPicker === 'emoji' && (
           <EmojiPicker
             onEmojiSelect={handleEmoji}
-            onClose={() => setShowPicker(false)}
+            onClose={() => setShowPicker(null)}
           />
         )}
       </div>

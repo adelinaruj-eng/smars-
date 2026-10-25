@@ -120,7 +120,7 @@ export function SmarsAIPage() {
         headers,
         body: JSON.stringify({
           message: userMessage,
-          history: messages.slice(-10).map((m) => ({ role: m.role, content: m.content })),
+          history: messages.slice(-8).map((m) => ({ role: m.role, content: m.content })),
         }),
       });
 
@@ -130,30 +130,70 @@ export function SmarsAIPage() {
         throw new Error(`Request failed (${response.status})`);
       }
 
-      const data = await response.json();
-      if (data.debug_error) {
-        console.error('Smars AI debug error from server:', data.debug_error);
+      const contentType = response.headers.get('content-type') || '';
+
+      // If the server returns JSON (fallback mode), parse as JSON
+      if (contentType.includes('application/json')) {
+        const data = await response.json();
+        if (data.debug_error) {
+          console.error('Smars AI debug error from server:', data.debug_error);
+        }
+        const aiResponse = data.response ?? data.error ?? 'I could not process that request.';
+
+        const { data: inserted } = await supabase.from('ai_conversations').insert({
+          user_id: user.id,
+          role: 'assistant',
+          content: aiResponse,
+        }).select().single();
+
+        const aiMsg: ChatMessage = (inserted as ChatMessage) ?? {
+          id: `ai-${Date.now()}`,
+          role: 'assistant' as const,
+          content: aiResponse,
+          created_at: new Date().toISOString(),
+        };
+
+        setMessages((prev) => [
+          ...prev.filter((m) => m.id !== tempId),
+          userMsg,
+          aiMsg,
+        ]);
+      } else {
+        // Streamed text response — render tokens as they arrive
+        const aiId = `ai-${Date.now()}`;
+        const aiCreated = new Date().toISOString();
+
+        setMessages((prev) => [
+          ...prev.filter((m) => m.id !== tempId),
+          userMsg,
+          { id: aiId, role: 'assistant', content: '', created_at: aiCreated },
+        ]);
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let accumulated = '';
+
+        if (reader) {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            accumulated += chunk;
+            setMessages((prev) =>
+              prev.map((m) => (m.id === aiId ? { ...m, content: accumulated } : m))
+            );
+          }
+        }
+
+        // Persist the full streamed response
+        if (accumulated) {
+          await supabase.from('ai_conversations').insert({
+            user_id: user.id,
+            role: 'assistant',
+            content: accumulated,
+          });
+        }
       }
-      const aiResponse = data.response ?? data.error ?? 'I could not process that request.';
-
-      const { data: inserted } = await supabase.from('ai_conversations').insert({
-        user_id: user.id,
-        role: 'assistant',
-        content: aiResponse,
-      }).select().single();
-
-      const aiMsg: ChatMessage = (inserted as ChatMessage) ?? {
-        id: `ai-${Date.now()}`,
-        role: 'assistant' as const,
-        content: aiResponse,
-        created_at: new Date().toISOString(),
-      };
-
-      setMessages((prev) => [
-        ...prev.filter((m) => m.id !== tempId),
-        userMsg,
-        aiMsg,
-      ]);
     } catch (err) {
       const errorMsg = 'Sorry, I could not reach the AI service right now. Please try again in a moment.';
       console.error('Smars AI fetch error:', err);

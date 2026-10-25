@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { Send, ArrowLeft, MessageSquare, Loader2, Users } from 'lucide-react';
+import { Send, ArrowLeft, MessageSquare, Loader2, Users, Circle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { Avatar } from '@/components/Avatar';
 import { ChatBackground } from '@/components/ChatBackground';
 import { EmojiInput } from '@/components/EmojiPicker';
 import { formatLastSeen } from '@/lib/formatTime';
+import { isStickerMessage } from '@/lib/stickers';
 import type { Profile, GroupChat, GroupMessage } from '@/lib/types';
 
 export function SmarsGroup() {
@@ -162,15 +163,22 @@ export function SmarsGroup() {
         <div className="flex-1 overflow-y-auto scrollbar-thin">
           {memberIds.map((uid) => {
             const p = allProfiles[uid];
+            const online = isOnline(uid);
+            const seen = getLastSeen(uid);
+            const isStale = !online && !seen;
             return (
               <div key={uid} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors">
-                <Avatar profile={p ?? null} size="sm" showStatus isOnline={isOnline(uid)} />
+                <Avatar profile={p ?? null} size="sm" showStatus isOnline={online} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
                     {p?.display_name ?? 'Unknown'}
                   </p>
-                  <p className={`text-xs truncate ${isOnline(uid) ? 'text-green-500' : 'text-gray-400'}`}>
-                    {isOnline(uid) ? 'Online' : formatLastSeen(getLastSeen(uid))}
+                  <p className={`text-xs truncate flex items-center gap-1 ${online ? 'text-green-600 font-medium' : isStale ? 'text-gray-300 italic' : 'text-gray-400'}`}>
+                    {online ? (
+                      <><Circle className="w-1.5 h-1.5 fill-green-500 text-green-500" />Active now</>
+                    ) : (
+                      isStale ? 'Inactive' : formatLastSeen(seen)
+                    )}
                   </p>
                 </div>
                 {uid === user?.id && (
@@ -231,6 +239,26 @@ export function SmarsGroup() {
               messages.map((msg) => {
                 const isOwn = msg.sender_id === user!.id;
                 const sender = allProfiles[msg.sender_id];
+                const isStickerOnly = isStickerMessage(msg.content);
+                if (isStickerOnly) {
+                  return (
+                    <div key={msg.id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+                      <div className="flex flex-col gap-1 max-w-[75%]">
+                        {!isOwn && (
+                          <div className="flex items-center gap-1.5 ml-1">
+                            <span className="text-xs font-medium text-gray-600">
+                              {sender?.display_name ?? 'Unknown'}
+                            </span>
+                          </div>
+                        )}
+                        <div className="text-6xl leading-none p-1">{msg.content.trim()}</div>
+                        <p className={`text-[10px] ${isOwn ? 'text-primary-100 self-end' : 'text-gray-500 self-start'}`}>
+                          {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                }
                 return (
                   <div
                     key={msg.id}
@@ -246,10 +274,10 @@ export function SmarsGroup() {
                         </div>
                       )}
                       <div
-                        className={`px-4 py-2.5 rounded-2xl text-sm ${
+                        className={`px-4 py-2.5 rounded-2xl text-sm shadow-sm ${
                           isOwn
                             ? 'bg-primary-600 text-white rounded-br-md'
-                            : 'bg-white text-gray-800 rounded-bl-md shadow-sm border border-gray-100'
+                            : 'bg-white text-gray-800 rounded-bl-md border border-gray-100'
                         }`}
                       >
                         <p className="leading-relaxed">{msg.content}</p>
@@ -282,6 +310,7 @@ export function SmarsGroup() {
             onChange={setNewMessage}
             placeholder="Type a message to the community..."
             onSend={doSend}
+            onSticker={(s) => { setNewMessage(s); doSend(); }}
           />
           <button
             type="submit"
