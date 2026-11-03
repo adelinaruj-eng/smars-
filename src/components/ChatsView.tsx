@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MessageCircle, Users, Bot } from 'lucide-react';
 import { DirectMessages } from '@/pages/DirectMessages';
 import { SmarsGroup } from '@/components/SmarsGroup';
-import { AIAssistant } from '@/components/AIAssistant';
+
 
 export function ChatsView() {
   const [tab, setTab] = useState<'direct' | 'smars' | 'ai'>('direct');
