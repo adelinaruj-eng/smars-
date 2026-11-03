@@ -42,7 +42,7 @@ export function ChatsView() {
           }`}
         >
           <Bot className="w-4 h-4" />
-          AI Assistant
+        
         </button>
       </div>
 
@@ -50,7 +50,7 @@ export function ChatsView() {
       <div className="flex-1 overflow-hidden p-4">
         {tab === 'direct' && <DirectMessages />}
         {tab === 'smars' && <SmarsGroup />}
-        {tab === 'ai' && <AIAssistant />}
+        
       </div>
     </div>
   );
