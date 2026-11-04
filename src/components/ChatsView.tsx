@@ -36,7 +36,7 @@ export function ChatsView() {
       </div>
 
       {/* Active Tab View Content */}
-      <div className="flex-1 overflow-hidden p-4">
+      <div className={`flex-1 overflow-hidden ${tab === 'smars' ? '' : 'p-4'}`}>
         {tab === 'direct' && <DirectMessages />}
         {tab === 'smars' && <SmarsGroup />}
         

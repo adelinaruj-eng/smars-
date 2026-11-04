@@ -141,7 +141,7 @@ export function SmarsGroup() {
     <div className="flex flex-1 min-h-0 overflow-hidden">
       {/* Members sidebar — visible on desktop */}
       <div
-        className={`w-72 border-r border-gray-200 flex-col bg-white min-h-0 ${
+        className={`w-64 border-r border-gray-200 flex-col bg-white min-h-0 ${
           mobileViewRef.current === 'info' ? 'flex' : 'hidden md:flex'
         }`}
       >
