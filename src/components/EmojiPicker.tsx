@@ -55,7 +55,7 @@ const STICKER_PACKS: { name: string; stickers: string[] }[] = [
   },
   {
     name: 'Objects',
-    stickers: ['📱', '💻', '⌨️', '🖥️', '🖨️', '🖱️', '💾', '💿', '📀', '📷', '📸', '📹', '🎥', '🎬', '📺', '📻', '⏰', '🕰️', '⌛', '⏳', '🔋', '🔌', '💡', '🔦', '🕯️', '💸', '💵', '💴', '💶', '💷', '🪙', '💰', '💳', '💎', '🔧', '🔨', '🛠️', '⚙️', '🧲', '🔑', '🗝️', '🚪', '🛏️', '🛋️', '🚿', '🛁', '🪒', '🧴', '🧷', '🧹', '🧺', '🧻', '🚽', '🚰', ' shower', '🛁', '🪞', '🪟', '🛍️', '🛒', '🎁', '🎈', '🎀', '🪄', '🧨', '✨', '🎉', '🎊'],
+    stickers: ['📱', '💻', '⌨️', '🖥️', '🖨️', '🖱️', '💾', '💿', '📀', '📷', '📸', '📹', '🎥', '🎬', '📺', '📻', '⏰', '🕰️', '⌛', '⏳', '🔋', '🔌', '💡', '🔦', '🕯️', '💸', '💵', '💴', '💶', '💷', '🪙', '💰', '💳', '💎', '🔧', '🔨', '🛠️', '⚙️', '🧲', '🔑', '🗝️', '🚪', '🛏️', '🛋️', '🚿', '🛁', '🪒', '🧴', '🧷', '🧹', '🧺', '🧻', '🚽', '🚰', '🛁', '🪞', '🪟', '🛍️', '🛒', '🎁', '🎈', '🎀', '🪄', '🧨', '✨', '🎉', '🎊'],
   },
 ];
 
@@ -174,11 +174,10 @@ interface EmojiInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  onSend?: () => void;
   onSticker?: (sticker: string) => void;
 }
 
-export function EmojiInput({ value, onChange, placeholder, onSend, onSticker }: EmojiInputProps) {
+export function EmojiInput({ value, onChange, placeholder, onSticker }: EmojiInputProps) {
   const [showPicker, setShowPicker] = useState<'emoji' | 'sticker' | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -196,17 +195,14 @@ export function EmojiInput({ value, onChange, placeholder, onSend, onSticker }: 
   }
 
   return (
-    <div className="flex items-center gap-1 flex-1 relative">
+    <div className="flex items-center gap-1 flex-1 min-w-0 relative bg-gray-50 border border-gray-200 rounded-2xl pl-4 pr-1.5 transition-all focus-within:bg-white focus-within:border-primary-400 focus-within:ring-2 focus-within:ring-primary-500/20">
       <input
         ref={inputRef}
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' && onSend) onSend();
-        }}
+        className="flex-1 min-w-0 py-3 bg-transparent text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none"
       />
       <div className="relative">
         <button

@@ -3,7 +3,6 @@ import { Plus, X, Camera, CircleDashed, Trash2, Eye, ChevronLeft, ChevronRight, 
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { Avatar } from '@/components/Avatar';
-import { EmojiInput } from '@/components/EmojiPicker';
 import type { Profile, Status, StatusView } from '@/lib/types';
 
 const STATUS_COLORS = [

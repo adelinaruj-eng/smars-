@@ -303,13 +303,12 @@ export function SmarsGroup() {
 
         <form
           onSubmit={sendMessage}
-          className="px-4 py-3 bg-white border-t border-gray-200 flex items-center gap-2"
+          className="px-4 py-3.5 bg-white border-t border-gray-200 flex items-center gap-3"
         >
           <EmojiInput
             value={newMessage}
             onChange={setNewMessage}
             placeholder="Type a message to the community..."
-            onSend={doSend}
             onSticker={(s) => { setNewMessage(s); doSend(); }}
           />
           <button
