@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { MessageCircle, Users, Bot } from 'lucide-react';
+import { MessageCircle, Users } from 'lucide-react';
 import { DirectMessages } from '@/pages/DirectMessages';
 import { SmarsGroup } from '@/components/SmarsGroup';
 
 
 export function ChatsView() {
-  const [tab, setTab] = useState<'direct' | 'smars' | 'ai'>('direct');
+  const [tab, setTab] = useState<'direct' | 'smars'>('direct');
 
   return (
     <div className="flex flex-col h-full min-h-0 overflow-hidden">
@@ -32,17 +32,6 @@ export function ChatsView() {
         >
           <Users className="w-4 h-4" />
           Smars
-        </button>
-        <button
-          onClick={() => setTab('ai')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-all ${
-            tab === 'ai'
-              ? 'border-primary-600 text-primary-700'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Bot className="w-4 h-4" />
-        
         </button>
       </div>
 
