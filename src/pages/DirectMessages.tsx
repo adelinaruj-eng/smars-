@@ -46,35 +46,30 @@ export function DirectMessages() {
       const { data } = await supabase
         .from('direct_messages')
         .select('*')
-        .or(`sender_id.eq.${user!.id},recipient_id.eq.${user!.id}`)
+        .or(
+          `and(sender_id.eq.${user!.id},recipient_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},recipient_id.eq.${user!.id})`
+        )
         .order('created_at', { ascending: true });
       if (!data) return;
 
-      const dmMessages = data as DirectMessage[];
-      const filtered = dmMessages.filter(
-        (m) =>
-          (m.sender_id === user!.id && m.recipient_id === otherUserId) ||
-          (m.sender_id === otherUserId && m.recipient_id === user!.id)
-      );
+      const filtered = data as DirectMessage[];
 
-      // Decrypt messages that have an IV (encrypted); leave plaintext as-is
       const otherUser = members.find((m) => m.id === otherUserId);
-      const decrypted: DecryptedMessage[] = [];
-      for (const msg of filtered) {
-        if (msg.iv && privateKey && profile?.public_key && otherUser?.public_key) {
-          try {
-            const isOutgoing = msg.sender_id === user!.id;
-            const senderPubKey = isOutgoing ? profile.public_key : otherUser.public_key;
-            const recipientPrivKey = privateKey;
-            const content = await decryptMessage(msg.content, msg.iv, senderPubKey, recipientPrivKey);
-            decrypted.push({ ...msg, decryptedContent: content, encrypted: true });
-          } catch {
-            decrypted.push({ ...msg, decryptedContent: '[Unable to decrypt]', encrypted: true });
+      const decrypted: DecryptedMessage[] = await Promise.all(
+        filtered.map(async (msg): Promise<DecryptedMessage> => {
+          if (msg.iv && privateKey && profile?.public_key && otherUser?.public_key) {
+            try {
+              const isOutgoing = msg.sender_id === user!.id;
+              const senderPubKey = isOutgoing ? profile.public_key : otherUser.public_key;
+              const content = await decryptMessage(msg.content, msg.iv, senderPubKey, privateKey);
+              return { ...msg, decryptedContent: content, encrypted: true };
+            } catch {
+              return { ...msg, decryptedContent: '[Unable to decrypt]', encrypted: true };
+            }
           }
-        } else {
-          decrypted.push({ ...msg, decryptedContent: msg.content, encrypted: false });
-        }
-      }
+          return { ...msg, decryptedContent: msg.content, encrypted: false };
+        })
+      );
       setMessages(decrypted);
 
       // Mark unread messages as read

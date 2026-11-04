@@ -37,13 +37,12 @@ export function SmarsGroup() {
 
       setSmarsGroup(groupData as GroupChat);
 
-      const { data: memberData } = await supabase
-        .from('group_chat_members')
-        .select('user_id')
-        .eq('group_chat_id', (groupData as GroupChat).id);
+      const [{ data: memberData }, { data: profilesData }] = await Promise.all([
+        supabase.from('group_chat_members').select('user_id').eq('group_chat_id', (groupData as GroupChat).id),
+        supabase.from('profiles').select('*'),
+      ]);
       setMemberIds((memberData as { user_id: string }[] | null)?.map((m) => m.user_id) ?? []);
 
-      const { data: profilesData } = await supabase.from('profiles').select('*');
       const profileMap: Record<string, Profile> = {};
       (profilesData as Profile[] | null)?.forEach((p) => {
         profileMap[p.id] = p;
