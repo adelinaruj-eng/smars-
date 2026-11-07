@@ -195,7 +195,7 @@ export function EmojiInput({ value, onChange, placeholder, onSticker }: EmojiInp
   }
 
   return (
-    <div className="flex items-center gap-1 flex-1 min-w-0 relative bg-gray-50 border border-gray-200 rounded-2xl pl-4 pr-1.5 transition-all focus-within:bg-white focus-within:border-primary-400 focus-within:ring-2 focus-within:ring-primary-500/20">
+    <div className="flex items-center gap-1 flex-1 min-w-0 relative bg-white rounded-lg pl-3 pr-1 shadow-sm">
       <input
         ref={inputRef}
         type="text"

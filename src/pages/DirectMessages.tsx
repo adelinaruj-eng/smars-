@@ -206,12 +206,12 @@ export function DirectMessages() {
     <div className="flex flex-1 min-h-0 overflow-hidden">
       {/* Member list */}
       <div
-        className={`w-80 border-r border-gray-200 flex flex-col bg-white min-h-0 ${
+        className={`w-80 xl:w-[400px] border-r border-gray-200 flex flex-col bg-white min-h-0 ${
           mobileViewRef.current === 'chat' ? 'hidden md:flex' : 'flex'
         }`}
       >
-        <div className="px-4 py-4 border-b border-gray-100">
-          <h2 className="font-serif text-lg font-bold text-gray-900 mb-3">Direct Messages</h2>
+        <div className="px-4 py-3 bg-[#f0f2f5]">
+          <h2 className="text-base font-semibold text-gray-900 mb-2.5">Direct Messages</h2>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -219,7 +219,7 @@ export function DirectMessages() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search classmates..."
-              className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none:ring-2 focus:ring-primary-500"
+              className="w-full pl-10 pr-4 py-2 bg-white rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/40"
             />
           </div>
         </div>
@@ -240,8 +240,8 @@ export function DirectMessages() {
                 <button
                   key={m.id}
                   onClick={() => selectMember(m)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors ${
-                    selectedMember?.id === m.id ? 'bg-primary-50' : ''
+                  className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-[#f5f6f6] transition-colors ${
+                    selectedMember?.id === m.id ? 'bg-[#f0f2f5]' : ''
                   }`}
                 >
                   <Avatar profile={m} size="md" showStatus isOnline={online} />
@@ -278,7 +278,7 @@ export function DirectMessages() {
       >
         {selectedMember ? (
           <>
-            <div className="px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-3">
+            <div className="px-4 py-2.5 bg-[#f0f2f5] border-b border-gray-200 flex items-center gap-3">
               <button
                 onClick={() => {
                   mobileViewRef.current = 'list';
@@ -313,7 +313,7 @@ export function DirectMessages() {
             </div>
 
             <ChatBackground themeId={profile?.chat_theme ?? 'mountain'}>
-              <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-6 space-y-3">
+              <div className="flex-1 overflow-y-auto scrollbar-thin px-6 py-4 space-y-2">
                 {messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-gray-400">
                   <MessageCircle className="w-12 h-12 mb-3 opacity-40" />
@@ -342,17 +342,15 @@ export function DirectMessages() {
                       className={`flex ${isOwn ? 'justify-end' : 'justify-start'} animate-fade-in`}
                     >
                       <div
-                        className={`max-w-[70%] px-4 py-2.5 rounded-2xl text-sm shadow-sm ${
+                        className={`max-w-[65%] px-2.5 pt-1.5 pb-1 rounded-lg text-sm shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] ${
                           isOwn
-                            ? 'bg-primary-600 text-white rounded-br-md'
-                            : 'bg-white text-gray-800 rounded-bl-md border border-gray-100'
+                            ? 'bg-[#d9fdd3] text-gray-900'
+                            : 'bg-white text-gray-900'
                         }`}
                       >
                         <p className="leading-relaxed">{msg.decryptedContent}</p>
                         <p
-                          className={`text-xs mt-1 flex items-center gap-1 ${
-                            isOwn ? 'text-primary-100' : 'text-gray-400'
-                          }`}
+                          className="text-[11px] mt-0.5 flex items-center justify-end gap-1 text-gray-500"
                         >
                           {msg.encrypted && <Lock className="w-2.5 h-2.5" />}
                           {new Date(msg.created_at).toLocaleTimeString([], {
@@ -371,7 +369,7 @@ export function DirectMessages() {
 
             <form
               onSubmit={sendMessage}
-              className="px-4 py-3.5 bg-white border-t border-gray-200 flex items-center gap-3"
+              className="px-3 py-2.5 bg-[#f0f2f5] flex items-center gap-2"
             >
               <EmojiInput
                 value={newMessage}
@@ -382,7 +380,7 @@ export function DirectMessages() {
               <button
                 type="submit"
                 disabled={!newMessage.trim() || sending}
-                className="w-10 h-10 bg-primary-600 hover:bg-primary-700 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-40 flex-shrink-0"
+                className="w-11 h-11 bg-[#00a884] hover:bg-[#029c7a] text-white rounded-full flex items-center justify-center transition-all disabled:opacity-40 flex-shrink-0"
               >
                 {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               </button>
