@@ -1,3 +1,3 @@
 # smars-
 
-[![Open in smars](https://smars/static/open-in-smars.svg)](https://smars/~/sb1-x1gcwblb)
+[![Open in bolt](https:/bolt/static/open-in-bolt.svg)](https://bolt/~/sb1-x1gcwblb)
