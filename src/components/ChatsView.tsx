@@ -3,17 +3,15 @@ import { MessageCircle, Users } from 'lucide-react';
 import { DirectMessages } from '@/pages/DirectMessages';
 import { SmarsGroup } from '@/components/SmarsGroup';
 
-
 export function ChatsView() {
   const [tab, setTab] = useState<'direct' | 'smars'>('direct');
 
   return (
     <div className="flex flex-col h-full min-h-0 overflow-hidden">
-      {/* Navigation Tabs */}
-      <div className="flex bg-white border-b border-gray-200 px-4 pt-3">
+      <div className="flex bg-[#f0f2f5] border-b border-gray-200 px-2">
         <button
           onClick={() => setTab('direct')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-all ${
+          className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all ${
             tab === 'direct'
               ? 'border-primary-600 text-primary-700'
               : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -24,7 +22,7 @@ export function ChatsView() {
         </button>
         <button
           onClick={() => setTab('smars')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-all ${
+          className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all ${
             tab === 'smars'
               ? 'border-primary-600 text-primary-700'
               : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -35,11 +33,9 @@ export function ChatsView() {
         </button>
       </div>
 
-      {/* Active Tab View Content */}
-      <div className={`flex-1 overflow-hidden ${tab === 'smars' ? '' : 'p-4'}`}>
+      <div className="flex-1 overflow-hidden">
         {tab === 'direct' && <DirectMessages />}
         {tab === 'smars' && <SmarsGroup />}
-        
       </div>
     </div>
   );
