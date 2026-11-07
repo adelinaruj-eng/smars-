@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { Send, ArrowLeft, MessageSquare, Loader2, Users, Circle } from 'lucide-react';
+import { Send, ArrowLeft, MessageSquare, Loader2, Users, Circle, CheckCheck } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { Avatar } from '@/components/Avatar';
@@ -120,7 +120,7 @@ export function SmarsGroup() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center text-gray-300">
+      <div className="flex-1 flex items-center justify-center text-[#8696a0]">
         <Loader2 className="w-7 h-7 animate-spin" />
       </div>
     );
@@ -128,9 +128,9 @@ export function SmarsGroup() {
 
   if (!smarsGroup) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
+      <div className="flex-1 flex flex-col items-center justify-center text-[#8696a0]">
         <Users className="w-16 h-16 mb-4 opacity-30" />
-        <p className="text-base font-medium text-gray-500">Smars Group</p>
+        <p className="text-base font-medium text-[#e9edef]">Smars Group</p>
         <p className="text-sm mt-1">The community group is being set up. Please check back shortly.</p>
       </div>
     );
@@ -140,14 +140,14 @@ export function SmarsGroup() {
     <div className="flex flex-1 min-h-0 overflow-hidden">
       {/* Members sidebar — visible on desktop */}
       <div
-        className={`w-64 border-r border-gray-200 flex-col bg-white min-h-0 ${
+        className={`w-64 border-r border-[#313d45] flex-col bg-[#111b21] min-h-0 ${
           mobileViewRef.current === 'info' ? 'flex' : 'hidden md:flex'
         }`}
       >
-        <div className="px-4 py-4 border-b border-gray-100 flex items-center gap-3">
+        <div className="px-4 py-4 border-b border-[#313d45] flex items-center gap-3">
           <button
             onClick={() => { mobileViewRef.current = 'chat'; }}
-            className="md:hidden text-gray-500 hover:text-gray-700"
+            className="md:hidden text-[#aebac1] hover:text-[#e9edef]"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -155,8 +155,8 @@ export function SmarsGroup() {
             <Users className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900">Smars</p>
-            <p className="text-xs text-gray-400">{memberIds.length} members</p>
+            <p className="text-[15px] text-[#e9edef]">Smars</p>
+            <p className="text-xs text-[#8696a0]">{memberIds.length} members</p>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto scrollbar-thin">
@@ -166,22 +166,22 @@ export function SmarsGroup() {
             const seen = getLastSeen(uid);
             const isStale = !online && !seen;
             return (
-              <div key={uid} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors">
+              <div key={uid} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#202c33] transition-colors">
                 <Avatar profile={p ?? null} size="sm" showStatus isOnline={online} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className="text-[15px] text-[#e9edef] truncate">
                     {p?.display_name ?? 'Unknown'}
                   </p>
-                  <p className={`text-xs truncate flex items-center gap-1 ${online ? 'text-green-600 font-medium' : isStale ? 'text-gray-300 italic' : 'text-gray-400'}`}>
+                  <p className={`text-xs truncate flex items-center gap-1 ${online ? 'text-[#00a884] font-medium' : isStale ? 'text-[#667781] italic' : 'text-[#8696a0]'}`}>
                     {online ? (
-                      <><Circle className="w-1.5 h-1.5 fill-green-500 text-green-500" />Active now</>
+                      <><Circle className="w-1.5 h-1.5 fill-[#00a884] text-[#00a884]" />Active now</>
                     ) : (
                       isStale ? 'Inactive' : formatLastSeen(seen)
                     )}
                   </p>
                 </div>
                 {uid === user?.id && (
-                  <span className="text-xs text-gray-400">You</span>
+                  <span className="text-xs text-[#8696a0]">You</span>
                 )}
               </div>
             );
@@ -191,13 +191,13 @@ export function SmarsGroup() {
 
       {/* Chat area */}
       <div className={`flex-1 flex flex-col min-h-0 overflow-hidden ${mobileViewRef.current === 'info' ? 'hidden md:flex' : 'flex'}`}>
-        <div className="px-4 py-2.5 bg-[#f0f2f5] border-b border-gray-200 flex items-center gap-3">
+        <div className="px-4 py-2.5 bg-[#202c33] flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center flex-shrink-0">
             <Users className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900">Smars</p>
-            <p className="text-xs text-gray-400">
+            <p className="text-[15px] text-[#e9edef]">Smars</p>
+            <p className="text-xs text-[#8696a0]">
               {memberIds.length} members
               {smarsGroup.description && ` · ${smarsGroup.description}`}
             </p>
@@ -210,7 +210,7 @@ export function SmarsGroup() {
               <Avatar key={uid} profile={allProfiles[uid] ?? null} size="sm" />
             ))}
             {memberIds.length > 4 && (
-              <div className="w-8 h-8 rounded-full bg-gray-200 text-gray-600 text-xs flex items-center justify-center ring-2 ring-white">
+              <div className="w-8 h-8 rounded-full bg-[#2a3942] text-[#aebac1] text-xs flex items-center justify-center ring-2 ring-[#202c33]">
                 +{memberIds.length - 4}
               </div>
             )}
@@ -220,7 +220,7 @@ export function SmarsGroup() {
               <Avatar key={uid} profile={allProfiles[uid] ?? null} size="sm" showStatus isOnline={isOnline(uid)} />
             ))}
             {memberIds.length > 5 && (
-              <div className="w-8 h-8 rounded-full bg-gray-200 text-gray-600 text-xs flex items-center justify-center ring-2 ring-white">
+              <div className="w-8 h-8 rounded-full bg-[#2a3942] text-[#aebac1] text-xs flex items-center justify-center ring-2 ring-[#202c33]">
                 +{memberIds.length - 5}
               </div>
             )}
@@ -228,9 +228,9 @@ export function SmarsGroup() {
         </div>
 
         <ChatBackground themeId={profile?.chat_theme ?? 'mountain'}>
-          <div className="flex-1 overflow-y-auto scrollbar-thin px-6 py-4 space-y-2">
+          <div className="flex-1 overflow-y-auto scrollbar-thin px-[6%] py-4 space-y-1.5">
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400">
+              <div className="flex flex-col items-center justify-center h-full text-[#8696a0]">
                 <MessageSquare className="w-12 h-12 mb-3 opacity-40" />
                 <p className="text-sm">No messages yet. Start the conversation!</p>
               </div>
@@ -245,13 +245,13 @@ export function SmarsGroup() {
                       <div className="flex flex-col gap-1 max-w-[75%]">
                         {!isOwn && (
                           <div className="flex items-center gap-1.5 ml-1">
-                            <span className="text-xs font-medium text-gray-600">
+                            <span className="text-xs font-medium text-[#8696a0]">
                               {sender?.display_name ?? 'Unknown'}
                             </span>
                           </div>
                         )}
                         <div className="text-6xl leading-none p-1">{msg.content.trim()}</div>
-                        <p className={`text-[10px] ${isOwn ? 'text-primary-100 self-end' : 'text-gray-500 self-start'}`}>
+                        <p className={`text-[10px] ${isOwn ? 'text-[#8696a0] self-end' : 'text-[#8696a0] self-start'}`}>
                           {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
@@ -267,26 +267,27 @@ export function SmarsGroup() {
                       {!isOwn && (
                         <div className="flex items-center gap-1.5 ml-1">
                           <Avatar profile={sender ?? null} size="sm" className="!w-6 !h-6 !text-[10px]" />
-                          <span className="text-xs font-medium text-gray-600">
+                          <span className="text-xs font-medium text-[#8696a0]">
                             {sender?.display_name ?? 'Unknown'}
                           </span>
                         </div>
                       )}
                       <div
-                        className={`px-2.5 pt-1.5 pb-1 rounded-lg text-sm shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] ${
+                        className={`px-2.5 pt-1.5 pb-1 rounded-lg text-sm shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] ${isOwn ? 'rounded-tr-none' : 'rounded-tl-none'} ${
                           isOwn
-                            ? 'bg-[#d9fdd3] text-gray-900'
-                            : 'bg-white text-gray-900'
+                            ? 'bg-[#005c4b] text-[#e9edef]'
+                            : 'bg-[#202c33] text-[#e9edef]'
                         }`}
                       >
                         <p className="leading-relaxed">{msg.content}</p>
                         <p
-                          className="text-[11px] mt-0.5 text-right text-gray-500"
+                          className="text-[11px] mt-0.5 flex items-center justify-end gap-1 text-[#8696a0]"
                         >
                           {new Date(msg.created_at).toLocaleTimeString([], {
                             hour: '2-digit',
                             minute: '2-digit',
                           })}
+                          {isOwn && <CheckCheck className="w-3.5 h-3.5 text-[#8696a0]" />}
                         </p>
                       </div>
                     </div>
@@ -300,7 +301,7 @@ export function SmarsGroup() {
 
         <form
           onSubmit={sendMessage}
-          className="px-3 py-2.5 bg-[#f0f2f5] flex items-center gap-2"
+          className="px-3 py-2.5 bg-[#202c33] flex items-center gap-2"
         >
           <EmojiInput
             value={newMessage}

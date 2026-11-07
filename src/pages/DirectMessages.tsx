@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { Send, Search, ArrowLeft, MessageCircle, Lock, Loader2, Circle } from 'lucide-react';
+import { Send, Search, ArrowLeft, MessageCircle, Lock, Loader2, Circle, CheckCheck } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { Avatar } from '@/components/Avatar';
@@ -206,29 +206,29 @@ export function DirectMessages() {
     <div className="flex flex-1 min-h-0 overflow-hidden">
       {/* Member list */}
       <div
-        className={`w-80 xl:w-[400px] border-r border-gray-200 flex flex-col bg-white min-h-0 ${
+        className={`w-80 xl:w-[400px] border-r border-[#313d45] flex flex-col bg-[#111b21] min-h-0 ${
           mobileViewRef.current === 'chat' ? 'hidden md:flex' : 'flex'
         }`}
       >
-        <div className="px-4 py-3 bg-[#f0f2f5]">
-          <h2 className="text-base font-semibold text-gray-900 mb-2.5">Direct Messages</h2>
+        <div className="px-4 pt-4 pb-2 bg-[#111b21]">
+          <h2 className="text-lg font-semibold text-[#e9edef] mb-3">Direct Messages</h2>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8696a0]" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search classmates..."
-              className="w-full pl-10 pr-4 py-2 bg-white rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/40"
+              className="w-full pl-10 pr-4 py-2 bg-[#202c33] text-[#e9edef] placeholder:text-[#8696a0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00a884]/40"
             />
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto scrollbar-thin">
           {loading ? (
-            <div className="p-4 text-center text-sm text-gray-400">Loading...</div>
+            <div className="p-4 text-center text-sm text-[#8696a0]">Loading...</div>
           ) : filteredMembers.length === 0 ? (
-            <div className="p-4 text-center text-sm text-gray-400">
+            <div className="p-4 text-center text-sm text-[#8696a0]">
               {search ? 'No members found' : 'No other members yet'}
             </div>
           ) : (
@@ -240,24 +240,24 @@ export function DirectMessages() {
                 <button
                   key={m.id}
                   onClick={() => selectMember(m)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-[#f5f6f6] transition-colors ${
-                    selectedMember?.id === m.id ? 'bg-[#f0f2f5]' : ''
+                  className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-[#202c33] transition-colors ${
+                    selectedMember?.id === m.id ? 'bg-[#2a3942]' : ''
                   }`}
                 >
                   <Avatar profile={m} size="md" showStatus isOnline={online} />
                   <div className="flex-1 text-left min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{m.display_name}</p>
+                    <p className="text-[15px] text-[#e9edef] truncate">{m.display_name}</p>
                     <p className="text-xs truncate flex items-center gap-1">
                       {online ? (
                         <>
-                          <span className="inline-flex items-center gap-1 text-green-600 font-medium">
-                            <Circle className="w-1.5 h-1.5 fill-green-500 text-green-500" />
+                          <span className="inline-flex items-center gap-1 text-[#00a884] font-medium">
+                            <Circle className="w-1.5 h-1.5 fill-[#00a884] text-[#00a884]" />
                             Active now
                           </span>
-                          <span className="text-gray-400">· {m.full_name}</span>
+                          <span className="text-[#8696a0]">· {m.full_name}</span>
                         </>
                       ) : (
-                        <span className={isStale ? 'text-gray-300 italic' : 'text-gray-400'}>
+                        <span className={isStale ? 'text-[#667781] italic' : 'text-[#8696a0]'}>
                           {isStale ? 'Inactive' : formatLastSeen(seen)}
                         </span>
                       )}
@@ -278,34 +278,34 @@ export function DirectMessages() {
       >
         {selectedMember ? (
           <>
-            <div className="px-4 py-2.5 bg-[#f0f2f5] border-b border-gray-200 flex items-center gap-3">
+            <div className="px-4 py-2.5 bg-[#202c33] flex items-center gap-3">
               <button
                 onClick={() => {
                   mobileViewRef.current = 'list';
                   setSelectedMember(null);
                 }}
-                className="md:hidden text-gray-500 hover:text-gray-700"
+                className="md:hidden text-[#aebac1] hover:text-[#e9edef]"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
               <Avatar profile={selectedMember} size="md" showStatus isOnline={isOnline(selectedMember.id)} />
               <div className="flex-1">
-                <p className="text-sm font-semibold text-gray-900">{selectedMember.display_name}</p>
-                <p className={`text-xs flex items-center gap-1 ${isOnline(selectedMember.id) ? 'text-green-600 font-medium' : 'text-gray-400'}`}>
+                <p className="text-[15px] text-[#e9edef]">{selectedMember.display_name}</p>
+                <p className={`text-xs flex items-center gap-1 ${isOnline(selectedMember.id) ? 'text-[#00a884] font-medium' : 'text-[#8696a0]'}`}>
                   {isOnline(selectedMember.id) ? (
-                    <><Circle className="w-1.5 h-1.5 fill-green-500 text-green-500" />Active now</>
+                    <><Circle className="w-1.5 h-1.5 fill-[#00a884] text-[#00a884]" />Active now</>
                   ) : (
                     formatLastSeen(getLastSeen(selectedMember.id))
                   )}
                 </p>
               </div>
               {canEncryptCurrent ? (
-                <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary-50 text-primary-700 text-xs font-medium rounded-lg" title="Messages are end-to-end encrypted">
+                <span className="inline-flex items-center gap-1 px-2 py-1 bg-[#202c33] text-[#00a884] text-xs font-medium rounded-lg" title="Messages are end-to-end encrypted">
                   <Lock className="w-3 h-3" />
                   Encrypted
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-500 text-xs font-medium rounded-lg" title="Encryption not available — recipient hasn't set up keys yet">
+                <span className="inline-flex items-center gap-1 px-2 py-1 bg-[#202c33] text-[#8696a0] text-xs font-medium rounded-lg" title="Encryption not available — recipient hasn't set up keys yet">
                   <Lock className="w-3 h-3" />
                   Setup needed
                 </span>
@@ -313,9 +313,9 @@ export function DirectMessages() {
             </div>
 
             <ChatBackground themeId={profile?.chat_theme ?? 'mountain'}>
-              <div className="flex-1 overflow-y-auto scrollbar-thin px-6 py-4 space-y-2">
+              <div className="flex-1 overflow-y-auto scrollbar-thin px-[6%] py-4 space-y-1.5">
                 {messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                <div className="flex flex-col items-center justify-center h-full text-[#8696a0]">
                   <MessageCircle className="w-12 h-12 mb-3 opacity-40" />
                   <p className="text-sm">No messages yet. Say hello!</p>
                 </div>
@@ -328,7 +328,7 @@ export function DirectMessages() {
                       <div key={msg.id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'} animate-fade-in`}>
                         <div className="flex flex-col gap-1 max-w-[70%]">
                           <div className="text-6xl leading-none p-1">{msg.decryptedContent.trim()}</div>
-                          <p className={`text-[10px] flex items-center gap-1 ${isOwn ? 'text-primary-100 self-end' : 'text-gray-500 self-start'}`}>
+                          <p className={`text-[10px] flex items-center gap-1 ${isOwn ? 'text-[#8696a0] self-end' : 'text-[#8696a0] self-start'}`}>
                             {msg.encrypted && <Lock className="w-2.5 h-2.5" />}
                             {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
@@ -342,21 +342,24 @@ export function DirectMessages() {
                       className={`flex ${isOwn ? 'justify-end' : 'justify-start'} animate-fade-in`}
                     >
                       <div
-                        className={`max-w-[65%] px-2.5 pt-1.5 pb-1 rounded-lg text-sm shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] ${
+                        className={`max-w-[65%] px-2.5 pt-1.5 pb-1 rounded-lg text-sm shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] ${isOwn ? 'rounded-tr-none' : 'rounded-tl-none'} ${
                           isOwn
-                            ? 'bg-[#d9fdd3] text-gray-900'
-                            : 'bg-white text-gray-900'
+                            ? 'bg-[#005c4b] text-[#e9edef]'
+                            : 'bg-[#202c33] text-[#e9edef]'
                         }`}
                       >
                         <p className="leading-relaxed">{msg.decryptedContent}</p>
                         <p
-                          className="text-[11px] mt-0.5 flex items-center justify-end gap-1 text-gray-500"
+                          className="text-[11px] mt-0.5 flex items-center justify-end gap-1 text-[#8696a0]"
                         >
                           {msg.encrypted && <Lock className="w-2.5 h-2.5" />}
                           {new Date(msg.created_at).toLocaleTimeString([], {
                             hour: '2-digit',
                             minute: '2-digit',
                           })}
+                          {isOwn && (
+                            <CheckCheck className={`w-3.5 h-3.5 ${msg.read_at ? 'text-[#53bdeb]' : 'text-[#8696a0]'}`} />
+                          )}
                         </p>
                       </div>
                     </div>
@@ -369,7 +372,7 @@ export function DirectMessages() {
 
             <form
               onSubmit={sendMessage}
-              className="px-3 py-2.5 bg-[#f0f2f5] flex items-center gap-2"
+              className="px-3 py-2.5 bg-[#202c33] flex items-center gap-2"
             >
               <EmojiInput
                 value={newMessage}
@@ -387,9 +390,9 @@ export function DirectMessages() {
             </form>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-gray-400">
+          <div className="flex flex-col items-center justify-center h-full text-[#8696a0]">
             <MessageCircle className="w-16 h-16 mb-4 opacity-30" />
-            <p className="text-base font-medium text-gray-500">Select a classmate to chat</p>
+            <p className="text-base font-medium text-[#e9edef]">Select a classmate to chat</p>
             <p className="text-sm mt-1">Choose someone from the list to start a conversation</p>
           </div>
         )}
