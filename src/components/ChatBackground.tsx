@@ -1,6 +1,6 @@
 import { getThemeById } from '@/lib/themes';
 
-const WALLPAPER_PATTERN = 'radial-gradient(rgba(134,150,160,0.08) 1px, transparent 1.5px)';
+const WALLPAPER_PATTERN = 'radial-gradient(var(--chat-pattern) 1px, transparent 1.5px)';
 
 interface ChatBackgroundProps {
   themeId: string;
@@ -13,7 +13,7 @@ export function ChatBackground({ themeId, children }: ChatBackgroundProps) {
   if (!theme.url) {
     return (
       <div
-        className="flex-1 flex flex-col bg-[#0b141a] min-h-0 overflow-hidden"
+        className="flex-1 flex flex-col bg-[var(--chat-wallpaper)] min-h-0 overflow-hidden"
         style={{ backgroundImage: WALLPAPER_PATTERN, backgroundSize: '22px 22px' }}
       >
         {children}
@@ -22,7 +22,7 @@ export function ChatBackground({ themeId, children }: ChatBackgroundProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col relative min-h-0 overflow-hidden bg-[#0b141a]">
+    <div className="flex-1 flex flex-col relative min-h-0 overflow-hidden bg-[var(--chat-wallpaper)]">
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${theme.url})` }}

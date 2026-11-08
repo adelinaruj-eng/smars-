@@ -6,6 +6,40 @@
   :root {
     --color-primary: #1e6b4f;
   }
+  .chat-light {
+    --chat-wallpaper: #efeae2;
+    --chat-pattern: rgba(11, 20, 26, 0.06);
+    --chat-panel: #ffffff;
+    --chat-header: #f0f2f5;
+    --chat-hover: #f5f6f6;
+    --chat-active: #f0f2f5;
+    --chat-input: #ffffff;
+    --chat-border: #e9edef;
+    --chat-incoming: #ffffff;
+    --chat-outgoing: #d9fdd3;
+    --chat-text: #111b21;
+    --chat-muted: #667781;
+    --chat-accent: #008069;
+    --chat-accent-hover: #017561;
+    --chat-chip-border: #d1d7db;
+  }
+  .chat-dark {
+    --chat-wallpaper: #0b141a;
+    --chat-pattern: rgba(134, 150, 160, 0.08);
+    --chat-panel: #111b21;
+    --chat-header: #202c33;
+    --chat-hover: #202c33;
+    --chat-active: #2a3942;
+    --chat-input: #2a3942;
+    --chat-border: #313d45;
+    --chat-incoming: #202c33;
+    --chat-outgoing: #005c4b;
+    --chat-text: #e9edef;
+    --chat-muted: #8696a0;
+    --chat-accent: #00a884;
+    --chat-accent-hover: #029c7a;
+    --chat-chip-border: #3b4a54;
+  }
   body {
     @apply antialiased;
   }

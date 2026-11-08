@@ -59,7 +59,7 @@ export function StatusPage() {
     });
 
     const groups: StatusGroup[] = Object.entries(grouped).map(([uid, statuses]) => ({
-      user: profileMap[uid] ?? { id: uid, display_name: 'Unknown', full_name: '', avatar_url: null, bio: '', is_admin: false, is_active: true, chat_theme: 'mountain', created_at: '', updated_at: '' },
+      user: profileMap[uid] ?? { id: uid, display_name: 'Unknown', full_name: '', avatar_url: null, bio: '', is_admin: false, is_active: true, chat_theme: 'mountain', chat_mode: 'light', created_at: '', updated_at: '' },
       statuses,
       viewed: statuses.every((s) => viewedStatusIds.has(s.id)),
     }));

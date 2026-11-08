@@ -81,15 +81,15 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
   return (
     <div
       ref={ref}
-      className="absolute bottom-full right-0 mb-2 bg-[#202c33] rounded-2xl shadow-2xl border border-[#313d45] w-80 z-50 animate-slide-up"
+      className="absolute bottom-full right-0 mb-2 bg-[var(--chat-header)] rounded-2xl shadow-2xl border border-[var(--chat-border)] w-80 z-50 animate-slide-up"
     >
-      <div className="flex border-b border-[#313d45] overflow-x-auto scrollbar-thin">
+      <div className="flex border-b border-[var(--chat-border)] overflow-x-auto scrollbar-thin">
         {EMOJI_CATEGORIES.map((cat, i) => (
           <button
             key={cat.name}
             onClick={() => setActiveCategory(i)}
             className={`px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors ${
-              activeCategory === i ? 'text-[#00a884] border-b-2 border-[#00a884]' : 'text-[#8696a0]'
+              activeCategory === i ? 'text-[var(--chat-accent)] border-b-2 border-[var(--chat-accent)]' : 'text-[var(--chat-muted)]'
             }`}
           >
             {cat.name}
@@ -102,7 +102,7 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
             <button
               key={i}
               onClick={() => onEmojiSelect(emoji)}
-              className="w-8 h-8 flex items-center justify-center text-xl rounded-lg hover:bg-[#2a3942] transition-colors"
+              className="w-8 h-8 flex items-center justify-center text-xl rounded-lg hover:bg-[var(--chat-hover)] transition-colors"
             >
               {emoji}
             </button>
@@ -135,15 +135,15 @@ export function StickerPicker({ onStickerSelect, onClose }: StickerPickerProps) 
   return (
     <div
       ref={ref}
-      className="absolute bottom-full right-0 mb-2 bg-[#202c33] rounded-2xl shadow-2xl border border-[#313d45] w-80 z-50 animate-slide-up"
+      className="absolute bottom-full right-0 mb-2 bg-[var(--chat-header)] rounded-2xl shadow-2xl border border-[var(--chat-border)] w-80 z-50 animate-slide-up"
     >
-      <div className="flex border-b border-[#313d45] overflow-x-auto scrollbar-thin">
+      <div className="flex border-b border-[var(--chat-border)] overflow-x-auto scrollbar-thin">
         {STICKER_PACKS.map((pack, i) => (
           <button
             key={pack.name}
             onClick={() => setActivePack(i)}
             className={`px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors ${
-              activePack === i ? 'text-[#00a884] border-b-2 border-[#00a884]' : 'text-[#8696a0]'
+              activePack === i ? 'text-[var(--chat-accent)] border-b-2 border-[var(--chat-accent)]' : 'text-[var(--chat-muted)]'
             }`}
           >
             {pack.name}
@@ -159,7 +159,7 @@ export function StickerPicker({ onStickerSelect, onClose }: StickerPickerProps) 
                 onStickerSelect(sticker);
                 onClose();
               }}
-              className="aspect-square flex items-center justify-center text-4xl rounded-xl hover:bg-[#2a3942] transition-all hover:scale-110 active:scale-95"
+              className="aspect-square flex items-center justify-center text-4xl rounded-xl hover:bg-[var(--chat-hover)] transition-all hover:scale-110 active:scale-95"
             >
               {sticker}
             </button>
@@ -195,20 +195,20 @@ export function EmojiInput({ value, onChange, placeholder, onSticker }: EmojiInp
   }
 
   return (
-    <div className="flex items-center gap-1 flex-1 min-w-0 relative bg-[#2a3942] rounded-lg pl-3 pr-1">
+    <div className="flex items-center gap-1 flex-1 min-w-0 relative bg-[var(--chat-input)] rounded-lg pl-3 pr-1">
       <input
         ref={inputRef}
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="flex-1 min-w-0 py-3 bg-transparent text-sm text-[#e9edef] placeholder:text-[#8696a0] focus:outline-none"
+        className="flex-1 min-w-0 py-3 bg-transparent text-sm text-[var(--chat-text)] placeholder:text-[var(--chat-muted)] focus:outline-none"
       />
       <div className="relative">
         <button
           type="button"
           onClick={() => setShowPicker(showPicker === 'sticker' ? null : 'sticker')}
-          className={`w-9 h-9 transition-colors flex items-center justify-center rounded-lg ${showPicker === 'sticker' ? 'text-[#00a884] bg-[#2a3942]' : 'text-[#8696a0] hover:text-[#e9edef]'}`}
+          className={`w-9 h-9 transition-colors flex items-center justify-center rounded-lg ${showPicker === 'sticker' ? 'text-[var(--chat-accent)] bg-[var(--chat-active)]' : 'text-[var(--chat-muted)] hover:text-[var(--chat-text)]'}`}
           title="Stickers"
         >
           <Sticker className="w-5 h-5" />
@@ -224,7 +224,7 @@ export function EmojiInput({ value, onChange, placeholder, onSticker }: EmojiInp
         <button
           type="button"
           onClick={() => setShowPicker(showPicker === 'emoji' ? null : 'emoji')}
-          className={`w-9 h-9 transition-colors flex items-center justify-center rounded-lg ${showPicker === 'emoji' ? 'text-[#00a884] bg-[#2a3942]' : 'text-[#8696a0] hover:text-[#e9edef]'}`}
+          className={`w-9 h-9 transition-colors flex items-center justify-center rounded-lg ${showPicker === 'emoji' ? 'text-[var(--chat-accent)] bg-[var(--chat-active)]' : 'text-[var(--chat-muted)] hover:text-[var(--chat-text)]'}`}
           title="Emojis"
         >
           <Smile className="w-5 h-5" />

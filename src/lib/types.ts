@@ -1,3 +1,5 @@
+export type ChatMode = 'light' | 'dark';
+
 export interface Profile {
   id: string;
   full_name: string;
@@ -7,6 +9,7 @@ export interface Profile {
   is_admin: boolean;
   is_active: boolean;
   chat_theme: string;
+  chat_mode: ChatMode;
   public_key: string | null;
   created_at: string;
   updated_at: string;

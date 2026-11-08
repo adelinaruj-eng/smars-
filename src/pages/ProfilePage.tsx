@@ -1,10 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { Camera, Save, Loader2, Check, Mail, Calendar, Shield, Link2, Palette, Upload, X } from 'lucide-react';
+import { Camera, Save, Loader2, Check, Mail, Calendar, Shield, Link2, Palette, Upload, X, Sun, Moon } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { Avatar } from '@/components/Avatar';
 import { ThemePicker } from '@/components/ThemePicker';
 import { DEFAULT_THEME_ID } from '@/lib/themes';
+import type { ChatMode } from '@/lib/types';
+
+const CHAT_MODE_OPTIONS: { id: ChatMode; label: string; description: string }[] = [
+  { id: 'light', label: 'Light', description: 'Bright wallpaper and white bubbles' },
+  { id: 'dark', label: 'Dark', description: 'Easy on the eyes, low glare' },
+];
 
 export function ProfilePage() {
   const { user, profile, refreshProfile } = useAuth();
